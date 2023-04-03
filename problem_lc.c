@@ -43,8 +43,10 @@ int count_cache_hit(struct page **hash_t, int count_el, int size_cache)
     int last = 0;
     int head = 0;
     int cache_hit = 0;
+    int size_hash_t = 0;
     int count_cache_el = 0;
 
+    size_hash_t = count_el;
     //create first el in list
     scanf("%d", &el);
     head = el;
@@ -54,6 +56,10 @@ int count_cache_hit(struct page **hash_t, int count_el, int size_cache)
 
     for (i = 1; i < count_el; ++i) {
         scanf("%d", &el);
+        if (el > size_hash_t) {
+            hash_t = (struct page **) realloc(hash_t, el * sizeof(struct page *));
+            size_hash_t = el;
+        }
         if (hash_t[el] == NULL) {       //cache miss
             if (count_cache_el >= size_cache)   //cache not full?
                 last = change_last_el(hash_t, last);
@@ -67,9 +73,9 @@ int count_cache_hit(struct page **hash_t, int count_el, int size_cache)
                 last = change_last_el(hash_t, last);
                 head = change_head_el(hash_t, head, el);
             } else {
-                hash_t[hash_t[el]->before->index]->next =    //elements between el are connecting here
+                hash_t[hash_t[el]->before->index]->next =       //elements between el are connecting here
                 hash_t[hash_t[el]->next->index];
-                hash_t[hash_t[el]->next->index]->before =    //elements between el are connecting here
+                hash_t[hash_t[el]->next->index]->before =       //elements between el are connecting here
                 hash_t[hash_t[el]->before->index];
                 head = change_head_el(hash_t, head, el);
             }
